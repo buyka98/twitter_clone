@@ -1,6 +1,15 @@
+import 'package:bwitter/helper/enum.dart';
+import 'package:bwitter/model/feed_model.dart';
+import 'package:bwitter/state/auth_state.dart';
+import 'package:bwitter/state/feed_state.dart';
 import 'package:bwitter/ui/theme/theme.dart';
 import 'package:bwitter/widgets/custom_widgets.dart';
+import 'package:bwitter/widgets/custom_widgets/custom_loader.dart';
+import 'package:bwitter/widgets/custom_widgets/empty_list.dart';
+import 'package:bwitter/widgets/tweet/tweet.dart';
+import 'package:bwitter/widgets/tweet/tweet_bottom_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FeedPage extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -42,7 +51,7 @@ class FeedPage extends StatelessWidget {
       child: customIcon(
         context,
         // icon: AppIcon.fabTweet,
-        icon: Icons.favorite_border,
+        icon: Icons.create,
         isTwitterIcon: true,
         iconColor: Theme.of(context).colorScheme.onPrimary,
         size: 25,
@@ -60,77 +69,76 @@ class _FeedPageBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // var authState = Provider.of<AuthState>(context, listen: false);
-    return SizedBox();
-    // return Consumer<FeedState>(
-    //   builder: (context, state, child) {
-    //     final List<FeedModel>? list = state.getTweetList(authState.userModel);
-    //     return CustomScrollView(
-    //       slivers: <Widget>[
-    //         child!,
-    //         state.isBusy && list == null
-    //             ? SliverToBoxAdapter(
-    //                 child: SizedBox(
-    //                   height: context.height - 135,
-    //                   child: CustomScreenLoader(
-    //                     height: double.infinity,
-    //                     width: context.width,
-    //                     backgroundColor: Colors.white,
-    //                   ),
-    //                 ),
-    //               )
-    //             : !state.isBusy && list == null
-    //                 ? const SliverToBoxAdapter(
-    //                     child: EmptyList(
-    //                       'No Tweet added yet',
-    //                       subTitle: 'When new Tweet added, they\'ll show up here \n Tap tweet button to add new',
-    //                     ),
-    //                   )
-    //                 : SliverList(
-    //                     delegate: SliverChildListDelegate(
-    //                       list!.map(
-    //                         (model) {
-    //                           return Container(
-    //                             color: Colors.white,
-    //                             child: Tweet(
-    //                               model: model,
-    //                               trailing: TweetBottomSheet()
-    //                                   .tweetOptionIcon(context, model: model, type: TweetType.Tweet, scaffoldKey: scaffoldKey),
-    //                               scaffoldKey: scaffoldKey,
-    //                             ),
-    //                           );
-    //                         },
-    //                       ).toList(),
-    //                     ),
-    //                   )
-    //       ],
-    //     );
-    //   },
-    //   child: SliverAppBar(
-    //     floating: true,
-    //     elevation: 0,
-    //     leading: Builder(
-    //       builder: (BuildContext context) {
-    //         return IconButton(
-    //           icon: const Icon(Icons.menu),
-    //           onPressed: () {
-    //             scaffoldKey.currentState!.openDrawer();
-    //           },
-    //         );
-    //       },
-    //     ),
-    //     title: Image.asset('assets/images/icon-480.png', height: 40),
-    //     centerTitle: true,
-    //     iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-    //     backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-    //     bottom: PreferredSize(
-    //       child: Container(
-    //         color: Colors.grey.shade200,
-    //         height: 1.0,
-    //       ),
-    //       preferredSize: const Size.fromHeight(0.0),
-    //     ),
-    //   ),
-    // );
+    var authState = Provider.of<AuthState>(context, listen: false);
+    return Consumer<FeedState>(
+      builder: (context, state, child) {
+        final List<FeedModel>? list = state.getTweetList(authState.userModel);
+        return CustomScrollView(
+          slivers: <Widget>[
+            child!,
+            state.isBusy && list == null
+                ? SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height - 135,
+                      child: CustomScreenLoader(
+                        height: double.infinity,
+                        width: MediaQuery.of(context).size.width,
+                        backgroundColor: Colors.white,
+                      ),
+                    ),
+                  )
+                : !state.isBusy && list == null
+                    ? const SliverToBoxAdapter(
+                        child: EmptyList(
+                          'No Tweet added yet',
+                          subTitle: 'When new Tweet added, they\'ll show up here \n Tap tweet button to add new',
+                        ),
+                      )
+                    : SliverList(
+                        delegate: SliverChildListDelegate(
+                          list!.map(
+                            (model) {
+                              return Container(
+                                color: Colors.white,
+                                child: Tweet(
+                                  model: model,
+                                  trailing: TweetBottomSheet()
+                                      .tweetOptionIcon(context, model: model, type: TweetType.Tweet, scaffoldKey: scaffoldKey),
+                                  scaffoldKey: scaffoldKey,
+                                ),
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      )
+          ],
+        );
+      },
+      child: SliverAppBar(
+        floating: true,
+        elevation: 0,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                scaffoldKey.currentState!.openDrawer();
+              },
+            );
+          },
+        ),
+        title: Image.asset('assets/images/icon-480.png', height: 40),
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        bottom: PreferredSize(
+          child: Container(
+            color: Colors.grey.shade200,
+            height: 1.0,
+          ),
+          preferredSize: const Size.fromHeight(0.0),
+        ),
+      ),
+    );
   }
 }

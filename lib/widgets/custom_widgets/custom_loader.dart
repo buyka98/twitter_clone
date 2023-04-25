@@ -23,7 +23,8 @@ class CustomLoader {
   _buildLoader() {
     _overlayEntry = OverlayEntry(
       builder: (context) {
-        return SizedBox(height: context.size?.height, width: context.size?.width, child: buildLoader(context));
+        return SizedBox(
+            height: MediaQuery.of(context).size.height, width: MediaQuery.of(context).size.width, child: buildLoader(context));
       },
     );
   }

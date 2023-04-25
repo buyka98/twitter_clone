@@ -30,5 +30,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:697334540717:ios:7fd7955eb04969ffb11924</string>
+	<key>DATABASE_URL</key>
+	<string>https://buyka-twitter-default-rtdb.asia-southeast1.firebasedatabase.app</string>
 </dict>
 </plist>

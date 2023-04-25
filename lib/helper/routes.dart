@@ -1,10 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:bwitter/helper/custom_route.dart';
+import 'package:bwitter/state/compose_tweet_state.dart';
 import 'package:bwitter/ui/page/auth/sign_in.dart';
+import 'package:bwitter/ui/page/auth/welcome_page.dart';
 import 'package:bwitter/ui/page/common/splash.dart';
+import 'package:bwitter/ui/page/feed/compose_tweet/compose_tweet_page.dart';
+import 'package:bwitter/widgets/custom_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:bwitter/ui/page/auth/sign_up.dart';
+import 'package:provider/provider.dart';
 
 class Routes {
   static dynamic route() {
@@ -45,6 +50,15 @@ class Routes {
       //             postId: postId,
       //           ),
       //       settings: const RouteSettings(name: 'FeedPostDetail'));
+
+      case "CreateFeedPage":
+        return CustomRoute<bool>(
+            builder: (BuildContext context) => ChangeNotifierProvider<ComposeTweetState>(
+                  create: (_) => ComposeTweetState(),
+                  child: const ComposeTweetPage(isRetweet: false, isTweet: true),
+                ));
+      case "WelcomePage":
+        return CustomRoute<bool>(builder: (BuildContext context) => const WelcomePage());
       case "SignUp":
         return CustomRoute<bool>(builder: (BuildContext context) => SignUp());
       case "SignIn":
@@ -58,9 +72,9 @@ class Routes {
     return MaterialPageRoute(
       builder: (context) => Scaffold(
         appBar: AppBar(
-          // title: customTitleText(
-          //   settings.name!.split('/')[1],
-          // ),
+          title: customTitleText(
+            settings.name!.split('/')[1],
+          ),
           centerTitle: true,
         ),
         body: Center(

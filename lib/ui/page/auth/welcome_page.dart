@@ -1,3 +1,5 @@
+import 'package:bwitter/helper/enum.dart';
+import 'package:bwitter/state/auth_state.dart';
 import 'package:bwitter/ui/page/auth/sign_in.dart';
 import 'package:bwitter/ui/page/home_page.dart';
 import 'package:bwitter/ui/theme/theme.dart';
@@ -5,6 +7,7 @@ import 'package:bwitter/widgets/custom_flat_button.dart';
 import 'package:bwitter/widgets/custom_widgets/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:bwitter/ui/page/auth/sign_up.dart';
+import 'package:provider/provider.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
@@ -21,11 +24,11 @@ class _WelcomePageState extends State<WelcomePage> {
       child: CustomFlatButton(
         label: "Create Account",
         onPressed: () {
-          // var state = Provider.of<AuthState>(context, listen: false);
+          var state = Provider.of<AuthState>(context, listen: false);
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => SignUp(),
+              builder: (context) => SignUp(loginCallBack: state.getCurrentUser),
             ),
           );
         },
@@ -69,17 +72,11 @@ class _WelcomePageState extends State<WelcomePage> {
                 ),
                 InkWell(
                   onTap: () {
-                    // var state = Provider.of<AuthState>(context, listen: false);
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => SignIn(loginCallback: state.getCurrentUser),
-                    //   ),
-                    // );
+                    var state = Provider.of<AuthState>(context, listen: false);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SignIn(),
+                        builder: (context) => SignIn(loginCallBack: state.getCurrentUser),
                       ),
                     );
                   },
@@ -104,9 +101,11 @@ class _WelcomePageState extends State<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // var state = Provider.of<AuthState>(context, listen: false);
+    var state = Provider.of<AuthState>(context, listen: true);
     return Scaffold(
-      body: HomePage(),
+      body: state.authStatus == AuthStatus.NOT_LOGGED_IN || state.authStatus == AuthStatus.NOT_DETERMINED
+          ? _body()
+          : const HomePage(),
     );
   }
 }

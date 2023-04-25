@@ -1,11 +1,15 @@
+import 'package:bwitter/helper/utility.dart';
+import 'package:bwitter/state/auth_state.dart';
 import 'package:bwitter/ui/theme/theme.dart';
 import 'package:bwitter/widgets/custom_flat_button.dart';
 import 'package:bwitter/widgets/custom_widgets/custom_loader.dart';
 import 'package:bwitter/widgets/custom_widgets/title_text.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({Key? key}) : super(key: key);
+  final Function? loginCallBack;
+  const SignIn({Key? key, this.loginCallBack}) : super(key: key);
 
   @override
   State<SignIn> createState() => _SignInState();
@@ -100,10 +104,33 @@ class _SignInState extends State<SignIn> {
       child: CustomFlatButton(
         label: "Submit",
         onPressed: () {
-          // _emailLogin
+          _emailLogin();
         },
         borderRadius: 30,
       ),
     );
+  }
+
+  void _emailLogin() {
+    var state = Provider.of<AuthState>(context, listen: false);
+    if (state.isbusy) {
+      return;
+    }
+    loader.showLoader(context);
+    var isValid = Utility.validateCredentials(context, _emailController.text, _passwordController.text);
+    if (isValid) {
+      state.signIn(_emailController.text, _passwordController.text, context: context).then((status) {
+        if (state.user != null) {
+          loader.hideLoader();
+          Navigator.pop(context);
+          widget.loginCallBack!();
+        } else {
+          cprint('Unable to login', errorIn: '_emailLoginButton');
+          loader.hideLoader();
+        }
+      });
+    } else {
+      loader.hideLoader();
+    }
   }
 }

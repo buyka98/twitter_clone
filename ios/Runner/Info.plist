@@ -47,5 +47,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>aps-environment</key>
+    <string>development</string>
 </dict>
 </plist>
